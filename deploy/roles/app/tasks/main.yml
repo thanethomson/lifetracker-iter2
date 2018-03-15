@@ -1,0 +1,67 @@
+---
+# Software prerequisites
+- name: update our apt cache
+  apt:
+    update_cache: yes
+- name: install OpenJDK 8's JRE (headless)
+  apt:
+    name: openjdk-8-jre-headless
+    state: present
+
+# User and group
+- name: "ensure target group exists"
+  group:
+    name: "lifetracker"
+    state: present
+- name: "ensure target user exists"
+  user:
+    name: "lifetracker"
+    shell: /bin/false
+    state: present
+    group: "lifetracker"
+
+# Folder configuration
+- name: "ensure target directory ({{ LIFETRACKER_INSTALL_DIR }} exists"
+  file:
+    path: "{{ LIFETRACKER_INSTALL_DIR }}"
+    state: directory
+    owner: "lifetracker"
+    group: "lifetracker"
+- name: ensure log folder exists
+  file:
+    path: "{{ LIFETRACKER_LOG_FOLDER }}"
+    state: directory
+    owner: "lifetracker"
+    group: "lifetracker"
+
+# Files necessary for execution
+- name: copy pre-built JAR across to server
+  copy:
+    src: "../../../../build/libs/lifetracker.jar"
+    dest: "{{ LIFETRACKER_INSTALL_DIR }}"
+- name: copy shell execution script
+  template:
+    src: "../files/lifetracker.sh.jinja2"
+    dest: "{{ LIFETRACKER_INSTALL_DIR }}/lifetracker.sh"
+    owner: "lifetracker"
+    group: "lifetracker"
+    mode: "u=rwx,g=r,o="
+- name: ensure log file exists
+  file:
+    path: "{{ LIFETRACKER_LOG_FILE }}"
+    state: touch
+    owner: "lifetracker"
+    group: "lifetracker"
+- name: install service execution script
+  template:
+    src: "../files/lifetracker.service.jinja2"
+    dest: "/lib/systemd/system/lifetracker.service"
+
+# Kick off our service
+- name: refresh systemd scripts
+  shell: systemctl daemon-reload
+- name: install and (re)start the LifeTracker service
+  service:
+    name: lifetracker
+    enabled: yes
+    state: restarted

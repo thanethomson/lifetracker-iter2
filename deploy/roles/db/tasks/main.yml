@@ -1,0 +1,38 @@
+---
+# Dependencies
+- name: update our apt cache
+  apt:
+    update_cache: yes
+- name: ensure PostgreSQL is installed
+  apt:
+    name: postgresql-9.5
+    state: present
+- name: ensure psycopg2 is installed
+  apt:
+    name: python-psycopg2
+    state: present
+
+- name: ensure database is present
+  become_user: postgres
+  postgresql_db:
+    name: "{{ LIFETRACKER_DB }}"
+    encoding: UTF-8
+- name: ensure database user is present
+  become_user: postgres
+  postgresql_user:
+    db: "{{ LIFETRACKER_DB }}"
+    name: "{{ LIFETRACKER_DB_USER }}"
+    password: "{{ LIFETRACKER_DB_PASSWORD }}"
+- name: copy our PostgreSQL configuration file
+  copy:
+    src: "../files/postgresql.conf"
+    dest: "/etc/postgresql/9.5/main/"
+- name: copy our PostgreSQL access control file
+  copy:
+    src: "../files/pg_hba.conf"
+    dest: "/etc/postgresql/9.5/main/"
+- name: restart PostgreSQL (to apply configuration)
+  service:
+    name: postgresql
+    enabled: yes
+    state: restarted

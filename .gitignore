@@ -76,3 +76,9 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+# ----------------------------------
+# Python Virtual Environment Ignores
+# ----------------------------------
+deploy/*.retry
+deploy/venv/
+

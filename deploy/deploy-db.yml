@@ -1,0 +1,9 @@
+---
+- hosts: db
+  become: yes
+  vars:
+    LIFETRACKER_DB: "lifetracker"
+    LIFETRACKER_DB_USER: "lifetracker"
+    LIFETRACKER_DB_PASSWORD: "some-mean-password"
+  roles:
+    - db

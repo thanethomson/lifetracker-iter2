@@ -1,0 +1,11 @@
+---
+- hosts: app-hosts
+  become: yes
+  vars:
+    LIFETRACKER_PROFILE: prod
+    LIFETRACKER_INSTALL_DIR: /opt/lifetracker
+    LIFETRACKER_LOG_FOLDER: /var/log/lifetracker
+    LIFETRACKER_LOG_FILE: "{{ LIFETRACKER_LOG_FOLDER }}/lifetracker.log"
+    LIFETRACKER_DB_URL: "jdbc:postgresql://{{ hostvars['db-host1'].ansible_host }}:5432/lifetracker"
+  roles:
+    - app

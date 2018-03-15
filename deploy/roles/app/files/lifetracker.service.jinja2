@@ -1,0 +1,12 @@
+[Unit]
+Description=LifeTracker
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart={{ LIFETRACKER_INSTALL_DIR }}/lifetracker.sh
+User=lifetracker
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

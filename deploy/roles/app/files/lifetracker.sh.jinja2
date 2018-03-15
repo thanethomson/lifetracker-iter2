@@ -1,0 +1,5 @@
+#!/bin/bash
+java -Dspring.profiles.active={{ LIFETRACKER_PROFILE }} \
+    -Dlogging.file={{ LIFETRACKER_LOG_FILE }} \
+    -Dlifetracker.database.jdbcUrl="{{ LIFETRACKER_DB_URL }}" \
+    -jar {{ LIFETRACKER_INSTALL_DIR }}/lifetracker.jar
